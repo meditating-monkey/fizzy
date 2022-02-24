@@ -2,7 +2,11 @@
 name = "fizzy"
 version = "0.1.0"
 edition = "2018"
+description = "CLI tool for generating files with boilerplate code"
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.release]
+opt-level = "z"
 
 [dependencies]
