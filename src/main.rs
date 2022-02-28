@@ -1,9 +1,9 @@
 use file_config::FileConfigs;
 use std::env;
-use std::fs::{self, File};
+use std::fs::File;
 use std::io::BufWriter;
 use std::io::{self, Read, Write};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::str;
 
 mod file_config;
@@ -21,11 +21,14 @@ fn main() {
 		"add" => {
 			if let Some(extension) = arguments.get(2) {
 				println!("Please enter the boilerplate to be added:");
-				let mut boilerplate = String::new();
+				let mut boilerplate: Vec<u8> = Vec::new();
+				boilerplate.reserve(100);
 				let mut stdin = io::stdin();
-				stdin.read_to_string(&mut boilerplate).unwrap();
-				file_configs
-					.add(String::from(extension), boilerplate);
+				stdin.read_to_end(&mut boilerplate).unwrap();
+				file_configs.add(
+					String::from(extension),
+					String::from_utf8(boilerplate).unwrap(),
+				);
 			}
 		}
 		"create" => {
@@ -38,7 +41,7 @@ fn main() {
 				writer
 					.write(
 						file_configs
-							.get(extension[extension.len()])
+							.get(extension[extension.len() - 1])
 							.as_bytes(),
 					)
 					.unwrap();
