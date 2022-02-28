@@ -1,25 +1,17 @@
 use crate::CONFIG_PATH;
-use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufWriter, Read};
 use std::path::Path;
 
-#[derive(Deserialize, Serialize)]
-struct FileConfig {
-	extension: String,
-	boilerplate: String,
-}
-
 pub struct FileConfigs {
-	configs: Option<Vec<FileConfig>>,
-	config_file: Option<File>,
+	configs: HashMap<String, String>,
 }
 
 impl FileConfigs {
 	pub fn new() -> Self {
 		FileConfigs {
-			configs: None,
-			config_file: None,
+			configs: HashMap::new(),
 		}
 	}
 
@@ -31,21 +23,25 @@ impl FileConfigs {
 			serde_json::to_writer(&mut buf_writer, &self.configs)
 				.unwrap();
 		} else {
-			let mut config_file = File::options()
-				.read(true)
-				.write(true)
-				.open(CONFIG_PATH)
-				.unwrap();
+			let mut config_file =
+				File::options().read(true).open(CONFIG_PATH).unwrap();
 
 			let mut content = String::new();
 			config_file.read_to_string(&mut content).unwrap();
-			let configs: Vec<FileConfig> =
+			let configs: HashMap<String, String> =
 				serde_json::from_str(&content).unwrap();
-
-			self.config_file = Some(config_file);
-			self.configs = Some(configs);
+			self.configs = configs;
 		}
 	}
 
-	fn add(&mut self, name: String, boilerplate: String) {}
+	pub fn add(&mut self, extension: String, boilerplate: String) {
+		self.configs.insert(extension, boilerplate);
+		let file = File::create(CONFIG_PATH).unwrap();
+		let writer = BufWriter::new(&file);
+		serde_json::to_writer(writer, &self.configs).unwrap();
+	}
+
+	pub fn get(&self, extension: &str) -> &String {
+		self.configs.get(extension).unwrap()
+	}
 }
