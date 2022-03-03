@@ -22,7 +22,7 @@ fn main() {
 			if let Some(extension) = arguments.get(2) {
 				println!("Please enter the boilerplate to be added:");
 				let mut boilerplate: Vec<u8> = Vec::new();
-				boilerplate.reserve(100);
+				boilerplate.reserve(500);
 				let mut stdin = io::stdin();
 				stdin.read_to_end(&mut boilerplate).unwrap();
 				file_configs.add(
@@ -36,19 +36,22 @@ fn main() {
 				users_current_path.push(PathBuf::from(file_name));
 				let file = File::create(users_current_path).unwrap();
 				let mut writer = BufWriter::new(file);
-				let extension: Vec<&str> =
-					file_name.split(".").collect();
+				let extension_index: usize =
+					file_name.find(".").unwrap() + 1;
 				writer
 					.write(
 						file_configs
-							.get(extension[extension.len() - 1])
+							.get(&file_name[extension_index..])
 							.as_bytes(),
 					)
 					.unwrap();
 			}
 		}
+		"remove" => {
+			if let Some(extension) = arguments.get(2) {
+				file_configs.remove(extension);
+			}
+		}
 		_ => {}
 	}
-
-	// b"#include <iostream>\nusing namespace std;\nint main()\n{\n\nreturn 0\n}").unwrap();
 }

@@ -34,11 +34,20 @@ impl FileConfigs {
 		}
 	}
 
-	pub fn add(&mut self, extension: String, boilerplate: String) {
-		self.configs.insert(extension, boilerplate);
+	fn update(&self) {
 		let file = File::create(CONFIG_PATH).unwrap();
 		let writer = BufWriter::new(&file);
 		serde_json::to_writer(writer, &self.configs).unwrap();
+	}
+
+	pub fn add(&mut self, extension: String, boilerplate: String) {
+		self.configs.insert(extension, boilerplate);
+		self.update();
+	}
+
+	pub fn remove(&mut self, extension: &str) {
+		self.configs.remove(extension);
+		self.update();
 	}
 
 	pub fn get(&self, extension: &str) -> &String {
