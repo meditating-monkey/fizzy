@@ -20,6 +20,11 @@ A simple CLI built in Rust to generate files with boilerplate.
 	```bash
 	fizzy create main.cpp 
 	```
+
+- `Remove` command will remove the boilerplate set for that extension.
+	```bash
+	fizzy remove cpp
+	```
 ---
 
 ## How to run project
