@@ -1,11 +1,11 @@
 # **Fizzy**
 
-A simple CLI built in Rust to generate files with boilerplate. 
+A simple CLI built in Rust to generate files with boilerplate.  
 
 ---
 ## Usage/List of Commands  
 
-- `Add` command will prompt you to enter the boilerplate for the extension you want to add. Once you have entered the boilerplate, simply press <kbd>Ctrl</kbd>+<kbd>Z</kbd>.	For example:
+- `Add` command will prompt you to enter the boilerplate for the extension you want to add. Once you have entered the boilerplate, simply press <kbd>Ctrl</kbd>+<kbd>Z</kbd>. You can also use this command to override the boilerplate for an existing extension	For example:
 	```bash 
 	#Boilerplate for .cpp
 	fizzy add cpp 
