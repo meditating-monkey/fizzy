@@ -20,7 +20,7 @@ fn main() {
 			if let Some(extension) = arguments.get(2) {
 				println!("Please enter the boilerplate to be added:");
 				let mut boilerplate: Vec<u8> = Vec::new();
-				boilerplate.reserve(500);
+				boilerplate.reserve(2000);
 				let mut stdin = io::stdin();
 				stdin.read_to_end(&mut boilerplate).unwrap();
 				file_configs.add(
