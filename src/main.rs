@@ -8,8 +8,6 @@ use std::str;
 
 mod file_config;
 
-const CONFIG_PATH: &str = "./config.json";
-
 fn main() {
 	// let possible_arguments;
 	let arguments = env::args().collect::<Vec<String>>();
@@ -18,7 +16,7 @@ fn main() {
 	file_configs.init();
 	let primary_argument: &str = &arguments.get(1).unwrap();
 	match primary_argument {
-		"add" => {
+		"add" | "insert" => {
 			if let Some(extension) = arguments.get(2) {
 				println!("Please enter the boilerplate to be added:");
 				let mut boilerplate: Vec<u8> = Vec::new();
@@ -31,7 +29,7 @@ fn main() {
 				);
 			}
 		}
-		"create" => {
+		"create" | "make" => {
 			if let Some(file_name) = arguments.get(2) {
 				users_current_path.push(PathBuf::from(file_name));
 				let file = File::create(users_current_path).unwrap();

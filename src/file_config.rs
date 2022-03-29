@@ -1,30 +1,46 @@
-use crate::CONFIG_PATH;
+use dirs_2::home_dir;
 use std::collections::HashMap;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{BufWriter, Read};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub struct FileConfigs {
+	config_path: PathBuf,
 	configs: HashMap<String, String>,
 }
 
 impl FileConfigs {
 	pub fn new() -> Self {
+		let mut config_path = home_dir().unwrap();
+		// config_path.push("fizzy");
+		config_path.push("fizzy_config.json");
+		println!("{:?}", config_path);
+
 		FileConfigs {
+			config_path,
 			configs: HashMap::new(),
 		}
 	}
 
 	pub fn init(&mut self) {
-		if !Path::new(CONFIG_PATH).exists() {
-			let file = File::create(CONFIG_PATH).unwrap();
+		if !Path::new(&self.config_path).exists() {
+			// fs::create_dir(&self.config_path).unwrap();
+			// let file = File::create(&self.config_path).unwrap();
+			let file = File::options()
+				.read(true)
+				.write(true)
+				.create(true)
+				.open(&self.config_path)
+				.unwrap();
 			let mut buf_writer = BufWriter::new(file);
 
 			serde_json::to_writer(&mut buf_writer, &self.configs)
 				.unwrap();
 		} else {
-			let mut config_file =
-				File::options().read(true).open(CONFIG_PATH).unwrap();
+			let mut config_file = File::options()
+				.read(true)
+				.open(&self.config_path)
+				.unwrap();
 
 			let mut content = String::new();
 			config_file.read_to_string(&mut content).unwrap();
@@ -35,7 +51,7 @@ impl FileConfigs {
 	}
 
 	fn update(&self) {
-		let file = File::create(CONFIG_PATH).unwrap();
+		let file = File::create(&self.config_path).unwrap();
 		let writer = BufWriter::new(&file);
 		serde_json::to_writer(writer, &self.configs).unwrap();
 	}
