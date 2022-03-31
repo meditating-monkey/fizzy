@@ -9,11 +9,9 @@ use std::str;
 mod file_config;
 
 fn main() {
-	// let possible_arguments;
 	let arguments = env::args().collect::<Vec<String>>();
 	let mut users_current_path: PathBuf = env::current_dir().unwrap();
 	let mut file_configs = FileConfigs::new();
-	file_configs.init();
 	let primary_argument: &str = &arguments.get(1).unwrap();
 	match primary_argument {
 		"add" | "insert" => {

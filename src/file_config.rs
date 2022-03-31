@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::convert::TryInto;
 use std::fs::File;
 use std::io::{BufWriter, Read};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 pub struct FileConfigs {
 	config_path: PathBuf,
@@ -15,18 +15,11 @@ impl FileConfigs {
 		let mut config_path = home_dir().unwrap();
 		config_path.push("fizzy_config.json");
 
-		FileConfigs {
-			config_path,
-			configs: HashMap::new(),
-		}
-	}
-
-	pub fn init(&mut self) {
 		let mut config_file = File::options()
 			.read(true)
 			.write(true)
 			.create(true)
-			.open(&self.config_path)
+			.open(&config_path)
 			.expect("Couldn't open/create file");
 
 		let mut content = String::with_capacity(
@@ -37,12 +30,18 @@ impl FileConfigs {
 				.try_into()
 				.expect("Couldn't convert length of file into usize"),
 		);
+
 		config_file
 			.read_to_string(&mut content)
 			.expect("Error in reading to string");
+
 		let configs: HashMap<String, String> =
 			serde_json::from_str(&content).unwrap();
-		self.configs = configs;
+
+		FileConfigs {
+			config_path,
+			configs,
+		}
 	}
 
 	fn update(&self) {
