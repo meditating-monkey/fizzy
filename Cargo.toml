@@ -1,6 +1,6 @@
 [package]
 name = "fizzy"
-version = "0.1.0"
+version = "0.1.5"
 edition = "2018"
 description = "CLI tool for generating files with boilerplate code"
 license-file = "LICENSE"
